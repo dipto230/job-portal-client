@@ -1,7 +1,19 @@
-import React from 'react';
+import React, { useCallback, useContext } from 'react';
+import { use } from 'react';
 import { Link } from 'react-router-dom';
+import AuthContext from '../../context/AuthContext/AuthContext';
 
 const Navbar = () => {
+  const {user, signOutUser} = useContext(AuthContext);
+  const handleSignOut = ()=>{
+    signOutUser()
+.then(()=>{
+  console.log('successfully logout')
+})
+.catch(error=>{
+  console.log('do not leave me alone')
+})
+  }
     const links = <>
      <li><a>Item 1</a></li>
     <li><a>Item 3</a></li>
@@ -39,10 +51,18 @@ const Navbar = () => {
           </ul>
         </div>
         <div className="navbar-end">
-        <Link to="/register"  >Register</Link>
+        {
+          user?<>
+            <button onClick={handleSignOut} className='btn'>Sign Out</button>
+          </>:<>
+          <Link to="/register"  >Register</Link>
           <Link to="/signIn">
           <button className="btn">Sign In</button>
           </Link>
+
+          </>
+        }
+        
         </div>
       </div>
     );
