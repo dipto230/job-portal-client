@@ -1,8 +1,8 @@
 import React, { useCallback, useContext } from 'react';
 import { use } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, NavLink } from 'react-router-dom';
 import AuthContext from '../../context/AuthContext/AuthContext';
-
+import jobIcon from '../../assets/icons8-job-application-96.png';
 const Navbar = () => {
   const {user, signOutUser} = useContext(AuthContext);
   const handleSignOut = ()=>{
@@ -15,8 +15,10 @@ const Navbar = () => {
 })
   }
     const links = <>
-     <li><a>Item 1</a></li>
-    <li><a>Item 3</a></li>
+     <li><NavLink to='/'>Home</NavLink></li>
+     <li><NavLink to='/'>Home</NavLink></li>
+     <li><NavLink to='/'>Home</NavLink></li>
+     <li><NavLink to='/'>Home</NavLink></li>
 
     </>
     return (
@@ -43,7 +45,10 @@ const Navbar = () => {
              {links}
             </ul>
           </div>
-          <a className="btn btn-ghost text-xl">daisyUI</a>
+          <a className="btn btn-ghost text-xl">
+            <img className='w-12' src={jobIcon}></img>
+            <h2 className='text-3xl'>Job Portal</h2>
+          </a>
         </div>
         <div className="navbar-center hidden lg:flex">
           <ul className="menu menu-horizontal px-1">
