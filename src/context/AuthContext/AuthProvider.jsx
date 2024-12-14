@@ -1,33 +1,63 @@
 import React, { useEffect, useState } from 'react';
 import AuthContext from './AuthContext';
-import {createUserWithEmailAndPassword, onAuthStateChanged } from "firebase/auth";
+import {
+    createUserWithEmailAndPassword,
+    onAuthStateChanged,
+    signInWithEmailAndPassword,
+} from "firebase/auth";
+import { getFirestore, doc, setDoc } from "firebase/firestore";
 import auth from './../../firebase/firebase.init';
 
-const AuthProvider = ({children}) => {
-    const [user, setUser]= useState(null);
-    const[loading, setLoading] = useState(true);
-    const createUser= (email,password,number,dateOfBirth)=>{
+const AuthProvider = ({ children }) => {
+    const [user, setUser] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const db = getFirestore();
+
+    // Create user and save additional data in Firestore
+    const createUser = async (email, password, number, dateOfBirth) => {
         setLoading(true);
-        return createUserWithEmailAndPassword(auth,email,password,number,dateOfBirth);
-    }
-    const authInfo={
-      user,
-      loading,
-      createUser
-    }
-    useEffect(()=>{
-     const unsubscribe =  onAuthStateChanged(auth,currentUser=>{
-            setUser(currentUser);
-            console.log('state captured', currentUser);
-            setLoading(false);
-        })
-        return ()=>{
-            unsubscribe();
+        try {
+            const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+            const { uid } = userCredential.user;
+            await setDoc(doc(db, "users", uid), {
+                phone: number,
+                dateOfBirth: dateOfBirth,
+            });
+            return userCredential;
+        } catch (error) {
+            console.error("Error creating user:", error);
+            throw error;
         }
-    },[])
+    };
+
+    // Sign in user
+    const signInUser = (email, password) => {
+        setLoading(true);
+        return signInWithEmailAndPassword(auth, email, password);
+    };
+
+    // Observe auth state changes
+    useEffect(() => {
+        const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+            setUser(currentUser);
+            console.log("Auth state changed:", currentUser);
+            setLoading(false);
+        });
+        return () => {
+            unsubscribe();
+        };
+    }, []);
+
+    const authInfo = {
+        user,
+        loading,
+        createUser,
+        signInUser,
+    };
+
     return (
         <AuthContext.Provider value={authInfo}>
-        {children}
+            {children}
         </AuthContext.Provider>
     );
 };
