@@ -1,9 +1,12 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
+import useAuth from '../../../hooks/UseAuth';
 
 const JobApply = () => {
     const {id} = useParams();
-    console.log(id);
+    const {user} =useAuth();
+    console.log(id, user);
+
 
     const submitJobApplication = e =>{
         e.preventDefault();
@@ -12,6 +15,16 @@ const JobApply = () => {
         const github = form.github.value;
         const resume =  form.resume.value;
          console.log(linkedIn, github, resume);
+
+         const jobApplication ={
+            job_id: _id,
+            applicant_email : user.email,
+           linkedIn,
+           github,
+           resume 
+            
+
+         }
     }
     return (
         <div className="hero bg-base-200 min-h-screen">
