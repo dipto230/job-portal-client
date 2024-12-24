@@ -3,9 +3,10 @@ import React from 'react';
 
 import Swal from 'sweetalert2';
 import useAuth from '../../../hooks/UseAuth';
-import { Navigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 const AddJob = () => {
+    const navigate = useNavigate();
     const {user} = useAuth();
     const handleAddJob = e => {
         e.preventDefault();
@@ -175,4 +176,4 @@ const AddJob = () => {
     );
 };
 
-export default AddJob;  
+export default AddJob;
