@@ -1,10 +1,50 @@
+import { object } from 'motion/react-client';
 import React from 'react';
 
+import Swal from 'sweetalert2';
+import useAuth from '../../../hooks/UseAuth';
+import { Navigate } from 'react-router-dom';
+
 const AddJob = () => {
+    const {user} = useAuth();
+    const handleAddJob = e => {
+        e.preventDefault();
+        const formData = new FormData(e.target);
+        // console.log(formData.entries())
+        const initialData = Object.fromEntries(formData.entries());
+        // console.log(initialData)
+        const { min, max, currency, ...newJob } = initialData;
+        console.log(min, max, currency, newJob)
+        newJob.salaryRange = { min, max, currency }
+        newJob.requirements = newJob.requirements.split('\n');
+        newJob.responsibilities = newJob.responsibilities.split('\n')
+        console.log(newJob);
+
+        fetch('http://localhost:5000/jobs', {
+            method: 'POST',
+            headers: {
+                'content-type': 'application/json'
+            },
+            body: JSON.stringify(newJob)
+        })
+            .then(res => res.json())
+            .then(data => {
+                if (data.insertedId) {
+                    Swal.fire({
+                        position: "top-end",
+                        icon: "success",
+                        title: "Job Has been added.",
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                    navigate('/myPostedJobs')
+                }
+            })
+    }
     return (
         <div>
             <h2  className='text-3xl'>Post A New Job Please </h2>
-            <form className="card-body">
+            <form onSubmit={handleAddJob} className="card-body">
 
             {/* job title*/}
         <div className="form-control">
@@ -116,7 +156,7 @@ const AddJob = () => {
                     <label className="label">
                         <span className="label-text">HR Email</span>
                     </label>
-                    <input type="text"  name='hr_email' placeholder="HR Email" className="input input-bordered" required />
+                    <input type="text" defaultValue={user?.email} name='hr_email' placeholder="HR Email" className="input input-bordered" required />
                 </div>
                   {/* HR Name */}
                   <div className="form-control">
