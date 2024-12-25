@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import useAuth from '../../../hooks/UseAuth';
 
-const MyPostedJobs = () => {
+const MyPostedJob = () => {
     const [jobs, setJobs] = useState([]);
     const { user } = useAuth();
 
@@ -49,4 +49,4 @@ const MyPostedJobs = () => {
     );
 };
 
-export default MyPostedJobs;
+export default MyPostedJob;

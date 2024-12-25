@@ -39,7 +39,7 @@ const AddJob = () => {
                         timer: 1500
                     });
                     navigate('/myPostedJobs')
-                }
+                }   
             })
     }
     return (
