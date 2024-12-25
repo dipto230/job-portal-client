@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import useAuth from '../../../hooks/UseAuth';
+import axios from 'axios';
 
 const MyApplications = () => {
     const{user } = useAuth();
@@ -8,6 +9,9 @@ const MyApplications = () => {
         fetch(`http://localhost:5000/job-application?email=${user.email}`)
         .then(res=> res.json())
         .then(data=>setJobs(data))
+
+        axios.get(`http://localhost:5000/job-application?email=${user.email}`,{withCredentials:true})
+        .then(res=>console.log((res.data)))
     }, [user.mail])
 
     return (
